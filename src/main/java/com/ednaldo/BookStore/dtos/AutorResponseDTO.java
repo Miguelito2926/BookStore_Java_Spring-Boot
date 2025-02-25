@@ -1,16 +1,21 @@
 package com.ednaldo.BookStore.dtos;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.ednaldo.BookStore.entities.Autor;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.UUID;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
-public class AutorResponseDTO implements Serializable {
-    private static final long serialVersion = 1L;
+public record AutorResponseDTO(UUID id, String nome, @JsonProperty(value = "data_nascimento") LocalDate dataNascimento, String nacionalidade) {
 
-    private boolean sucesso;
+    public Autor mapearAutor() {
+        Autor autor = new Autor();
+        autor.setId(this.id);
+        autor.setNome(this.nome);
+        autor.setDataNascimento(this.dataNascimento);
+        autor.setNacionalidade(this.nacionalidade);
+
+        return autor;
+
+    }
 }
