@@ -6,6 +6,7 @@ import com.ednaldo.BookStore.dtos.AutorSuccessResponseDTO;
 import com.ednaldo.BookStore.entities.Autor;
 import com.ednaldo.BookStore.exceptions.AutorNotFoundException;
 import com.ednaldo.BookStore.repositories.AutorRepository;
+import org.hibernate.sql.results.internal.StandardRowReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatusCode;
@@ -36,7 +37,7 @@ public class AutorService {
         return autorList;
     }
 
-    public AutorResponseDTO getAutor(String  id) throws Exception {
+    public AutorResponseDTO getAutor(String id) throws Exception {
 
         Optional<Autor> autorOptional = autorRepository.findById(UUID.fromString(id));
         if (autorOptional.isPresent()) {
@@ -50,5 +51,21 @@ public class AutorService {
             return dto;
         }
         throw new AutorNotFoundException("Autor com o ID " + id + " não encontrado.");
+    }
+
+
+    /*Por que essa abordagem no delete?
+✅ Evita a consulta completa (findById carrega o objeto inteiro, existsById só verifica a existência).
+✅ Não precisa capturar exceção.
+✅ Código mais claro e direto.
+
+Se o ID existir, ele exclui. Se não, lança a exceção antes de tentar excluir.*/
+    public void deleteAutor(String id) {
+        UUID uuid = UUID.fromString(id);
+
+        if (!autorRepository.existsById(uuid)) {
+            throw new AutorNotFoundException("Autor com o ID " + id + " não encontrado.");
+        }
+        autorRepository.deleteById(uuid);
     }
 }

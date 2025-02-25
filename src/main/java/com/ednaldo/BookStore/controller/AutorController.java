@@ -48,8 +48,13 @@ public class AutorController {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<AutorResponseDTO>  getAutorDetails(@PathVariable String  id) throws Exception {
-        AutorResponseDTO autor = autorService.getAutor(id);
 
-        return ResponseEntity.ok(autor);
+        return ResponseEntity.ok(autorService.getAutor(id));
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> removeAutor(@PathVariable String id) {
+        autorService.deleteAutor(id);
+        return ResponseEntity.ok().build();
     }
 }
