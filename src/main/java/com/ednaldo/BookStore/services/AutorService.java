@@ -1,21 +1,21 @@
 package com.ednaldo.BookStore.services;
 
 
+import com.ednaldo.BookStore.dtos.AutorRequestDto;
 import com.ednaldo.BookStore.dtos.AutorResponseDTO;
 import com.ednaldo.BookStore.dtos.AutorSuccessResponseDTO;
 import com.ednaldo.BookStore.entities.Autor;
 import com.ednaldo.BookStore.exceptions.AutorNotFoundException;
 import com.ednaldo.BookStore.repositories.AutorRepository;
-import org.hibernate.sql.results.internal.StandardRowReader;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class AutorService {
@@ -67,5 +67,38 @@ Se o ID existir, ele exclui. Se não, lança a exceção antes de tentar excluir
             throw new AutorNotFoundException("Autor com o ID " + id + " não encontrado.");
         }
         autorRepository.deleteById(uuid);
+    }
+
+    public List<AutorResponseDTO> pesquisarAutor(String nome, String nacionalidade) {
+        List<Autor> autores;
+
+        if (nome != null && nacionalidade != null) {
+            autores = autorRepository.findByNomeAndNacionalidade(nome, nacionalidade);
+        } else if (nome != null) {
+            autores = autorRepository.findByNome(nome);
+        } else if (nacionalidade != null) {
+            autores = autorRepository.findByNacionalidade(nacionalidade);
+        } else {
+            autores = autorRepository.findAll();
+        }
+
+        return autores.stream()
+                .map(autor -> new AutorResponseDTO(
+                        autor.getId(),
+                        autor.getNome(),
+                        autor.getDataNascimento(),
+                        autor.getNacionalidade()))
+                .collect(Collectors.toList());
+    }
+
+    public void update(String id, AutorRequestDto requestDto) {
+       Autor autor =  autorRepository.findById(UUID.fromString(id))
+               .orElseThrow(() -> new AutorNotFoundException("Autor com o ID" + id + "não encontrado."));
+
+        autor.setNome(requestDto.nome());
+        autor.setDataNascimento(requestDto.dataNascimento());
+        autor.setNacionalidade(requestDto.nacionalidade());
+
+        autorRepository.save(autor);
     }
 }

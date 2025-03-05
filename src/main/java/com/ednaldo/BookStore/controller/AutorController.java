@@ -40,14 +40,14 @@ public class AutorController {
         return ResponseEntity.created(location).build();
     }
 
-    @GetMapping
-    public ResponseEntity<List<Autor>> findAllAutores() {
-        List<Autor> listaAutores = autorService.listarAutores();
-        return ResponseEntity.ok(listaAutores);
-    }
+//    @GetMapping
+//    public ResponseEntity<List<Autor>> findAllAutores() {
+//        List<Autor> listaAutores = autorService.listarAutores();
+//        return ResponseEntity.ok(listaAutores);
+//    }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<AutorResponseDTO>  getAutorDetails(@PathVariable String  id) throws Exception {
+    public ResponseEntity<AutorResponseDTO> getAutorDetails(@PathVariable String id) throws Exception {
 
         return ResponseEntity.ok(autorService.getAutor(id));
     }
@@ -55,6 +55,21 @@ public class AutorController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> removeAutor(@PathVariable String id) {
         autorService.deleteAutor(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<AutorResponseDTO>> pesquisar(
+            @RequestParam(value = "nome", required = false) String nome,
+            @RequestParam(value = "nacionalidade", required = false) String nacionalidade) {
+
+        List<AutorResponseDTO> dto = autorService.pesquisarAutor(nome, nacionalidade);
+        return ResponseEntity.ok(dto);
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<Void> atualizarAutor(@PathVariable String id, @RequestBody AutorRequestDto requestDto) {
+        autorService.update(id, requestDto);
         return ResponseEntity.ok().build();
     }
 }
