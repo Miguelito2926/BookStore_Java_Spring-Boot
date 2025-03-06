@@ -6,7 +6,9 @@ import com.ednaldo.BookStore.dtos.AutorResponseDTO;
 import com.ednaldo.BookStore.dtos.AutorSuccessResponseDTO;
 import com.ednaldo.BookStore.entities.Autor;
 import com.ednaldo.BookStore.exceptions.AutorNotFoundException;
+import com.ednaldo.BookStore.exceptions.OperationNotAllowedException;
 import com.ednaldo.BookStore.repositories.AutorRepository;
+import com.ednaldo.BookStore.repositories.LivroRepository;
 import com.ednaldo.BookStore.validator.AutorValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,14 +23,17 @@ public class AutorService {
 
     private final AutorRepository autorRepository;
     private final AutorValidator autorValidator;
+    private final LivroRepository livroRepository;
 
     @Autowired
-    public AutorService(AutorRepository autorRepository, AutorValidator autorValidator) {
+    public AutorService(AutorRepository autorRepository, AutorValidator autorValidator, LivroRepository livroRepository) {
         this.autorRepository = autorRepository;
         this.autorValidator = autorValidator;
+        this.livroRepository = livroRepository;
     }
 
     public AutorSuccessResponseDTO createAutor(Autor requestDto) {
+
         autorValidator.validarAutor(requestDto);
         autorRepository.save(requestDto);
         return new AutorSuccessResponseDTO(true);
@@ -63,11 +68,15 @@ public class AutorService {
 
 Se o ID existir, ele exclui. Se não, lança a exceção antes de tentar excluir.*/
     public void deleteAutor(String id) {
+
         UUID uuid = UUID.fromString(id);
 
-        if (!autorRepository.existsById(uuid)) {
-            throw new AutorNotFoundException("Autor com o ID " + id + " não encontrado.");
+        Autor autor = autorRepository.findById(uuid).orElseThrow(() -> new AutorNotFoundException("Autor com o ID " + id + " não encontrado."));
+
+        if (possuiLivro(autor)){
+            throw new OperationNotAllowedException("Não é possivel excluir um autor que possui livros cadastrado!");
         }
+
         autorRepository.deleteById(uuid);
     }
 
@@ -109,5 +118,11 @@ Se o ID existir, ele exclui. Se não, lança a exceção antes de tentar excluir
 
         // Salva a atualização no banco de dados
         autorRepository.save(autor);
+    }
+
+
+    //Metodo auxiliar para verificação se autor possui livros cadastrados
+    public boolean possuiLivro(Autor autor) {
+        return livroRepository.existsByAutor(autor);
     }
 }

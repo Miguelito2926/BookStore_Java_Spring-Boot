@@ -3,6 +3,7 @@ package com.ednaldo.BookStore.handle;
 import com.ednaldo.BookStore.exceptions.AutorAlreadyRegisteredException;
 import com.ednaldo.BookStore.exceptions.AutorNotFoundException;
 import com.ednaldo.BookStore.exceptions.ErrorResponse;
+import com.ednaldo.BookStore.exceptions.OperationNotAllowedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -31,6 +32,17 @@ public class GlobalExceptionHandler {
         );
 
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(OperationNotAllowedException.class)
+    public ResponseEntity<ErrorResponse> handleOperationNotAllowedException(OperationNotAllowedException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                ex.getMessage()
+        );
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }
 
