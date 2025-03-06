@@ -7,11 +7,10 @@ import com.ednaldo.BookStore.dtos.AutorSuccessResponseDTO;
 import com.ednaldo.BookStore.entities.Autor;
 import com.ednaldo.BookStore.exceptions.AutorNotFoundException;
 import com.ednaldo.BookStore.repositories.AutorRepository;
-import org.aspectj.weaver.ast.Not;
+import com.ednaldo.BookStore.validator.AutorValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,13 +20,16 @@ import java.util.stream.Collectors;
 public class AutorService {
 
     private final AutorRepository autorRepository;
+    private final AutorValidator autorValidator;
 
     @Autowired
-    public AutorService(AutorRepository autorRepository) {
+    public AutorService(AutorRepository autorRepository, AutorValidator autorValidator) {
         this.autorRepository = autorRepository;
+        this.autorValidator = autorValidator;
     }
 
     public AutorSuccessResponseDTO createAutor(Autor requestDto) {
+        autorValidator.validarAutor(requestDto);
         autorRepository.save(requestDto);
         return new AutorSuccessResponseDTO(true);
     }
@@ -92,13 +94,20 @@ Se o ID existir, ele exclui. Se não, lança a exceção antes de tentar excluir
     }
 
     public void update(String id, AutorRequestDto requestDto) {
+
+        // Busca o autor pelo ID, lançando exceção se não encontrar
        Autor autor =  autorRepository.findById(UUID.fromString(id))
                .orElseThrow(() -> new AutorNotFoundException("Autor com o ID" + id + "não encontrado."));
 
+        // Atualiza os dados do autor existente
         autor.setNome(requestDto.nome());
         autor.setDataNascimento(requestDto.dataNascimento());
         autor.setNacionalidade(requestDto.nacionalidade());
 
+        // Valida se os dados podem ser atualizados sem criar duplicatas
+        autorValidator.validarAutor(autor);
+
+        // Salva a atualização no banco de dados
         autorRepository.save(autor);
     }
 }
