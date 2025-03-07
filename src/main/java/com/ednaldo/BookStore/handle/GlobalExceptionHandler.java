@@ -1,6 +1,5 @@
 package com.ednaldo.BookStore.handle;
 
-import com.ednaldo.BookStore.dtos.ErroCampo;
 import com.ednaldo.BookStore.exceptions.AutorAlreadyRegisteredException;
 import com.ednaldo.BookStore.exceptions.AutorNotFoundException;
 import com.ednaldo.BookStore.exceptions.ErrorResponse;
@@ -38,12 +37,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(OperationNotAllowedException.class)
     public ResponseEntity<ErrorResponse> handleOperationNotAllowedException(OperationNotAllowedException ex) {
         ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                HttpStatus.UNPROCESSABLE_ENTITY.value(),
+                HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(),
                 ex.getMessage()
         );
 
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }
 
