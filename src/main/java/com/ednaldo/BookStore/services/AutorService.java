@@ -10,6 +10,7 @@ import com.ednaldo.BookStore.exceptions.OperationNotAllowedException;
 import com.ednaldo.BookStore.repositories.AutorRepository;
 import com.ednaldo.BookStore.repositories.LivroRepository;
 import com.ednaldo.BookStore.validator.AutorValidator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,20 +18,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+@RequiredArgsConstructor
 @Service
 public class AutorService {
 
     private final AutorRepository autorRepository;
     private final AutorValidator autorValidator;
     private final LivroRepository livroRepository;
-
-    @Autowired
-    public AutorService(AutorRepository autorRepository, AutorValidator autorValidator, LivroRepository livroRepository) {
-        this.autorRepository = autorRepository;
-        this.autorValidator = autorValidator;
-        this.livroRepository = livroRepository;
-    }
 
     public AutorSuccessResponseDTO createAutor(Autor requestDto) {
 

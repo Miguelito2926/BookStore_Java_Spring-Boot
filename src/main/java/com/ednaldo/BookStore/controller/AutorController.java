@@ -5,26 +5,20 @@ import com.ednaldo.BookStore.dtos.AutorResponseDTO;
 import com.ednaldo.BookStore.dtos.AutorSuccessResponseDTO;
 import com.ednaldo.BookStore.entities.Autor;
 import com.ednaldo.BookStore.services.AutorService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.UUID;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "/autores")
 public class AutorController {
 
     private final AutorService autorService;
-
-    @Autowired
-    public AutorController(AutorService autorService) {
-        this.autorService = autorService;
-    }
 
     @PostMapping
     public ResponseEntity<Void> criarAutor(@RequestBody AutorRequestDto requestDto) {
