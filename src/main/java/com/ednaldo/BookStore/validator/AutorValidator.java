@@ -3,22 +3,18 @@ package com.ednaldo.BookStore.validator;
 import com.ednaldo.BookStore.entities.Autor;
 import com.ednaldo.BookStore.exceptions.AutorAlreadyRegisteredException;
 import com.ednaldo.BookStore.repositories.AutorRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
-
+@RequiredArgsConstructor
 @Component
 public class AutorValidator {
 
     private static final Logger logger = LoggerFactory.getLogger(AutorValidator.class);
     private final AutorRepository autorRepository;
-
-    // Construtor para injeção do repositório
-    public AutorValidator(AutorRepository autorRepository) {
-        this.autorRepository = autorRepository;
-    }
 
     /**
      * Valida se um autor pode ser cadastrado ou atualizado sem repetir dados.

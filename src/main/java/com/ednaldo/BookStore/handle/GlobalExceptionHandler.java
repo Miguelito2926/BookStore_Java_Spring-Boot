@@ -1,5 +1,6 @@
 package com.ednaldo.BookStore.handle;
 
+import com.ednaldo.BookStore.dtos.ErroCampo;
 import com.ednaldo.BookStore.exceptions.AutorAlreadyRegisteredException;
 import com.ednaldo.BookStore.exceptions.AutorNotFoundException;
 import com.ednaldo.BookStore.exceptions.ErrorResponse;

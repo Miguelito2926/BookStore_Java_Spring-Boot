@@ -5,6 +5,7 @@ import com.ednaldo.BookStore.dtos.AutorResponseDTO;
 import com.ednaldo.BookStore.dtos.AutorSuccessResponseDTO;
 import com.ednaldo.BookStore.entities.Autor;
 import com.ednaldo.BookStore.services.AutorService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class AutorController {
     private final AutorService autorService;
 
     @PostMapping
-    public ResponseEntity<Void> criarAutor(@RequestBody AutorRequestDto requestDto) {
+    public ResponseEntity<Void> criarAutor(@RequestBody @Valid AutorRequestDto requestDto) {
 
         Autor autorEntidade = requestDto.mapearAutor();
         AutorSuccessResponseDTO autorResponseDTO = autorService.createAutor(autorEntidade);
