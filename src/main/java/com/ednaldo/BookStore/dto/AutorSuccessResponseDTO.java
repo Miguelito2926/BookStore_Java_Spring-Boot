@@ -1,4 +1,4 @@
-package com.ednaldo.BookStore.dtos;
+package com.ednaldo.BookStore.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

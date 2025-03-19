@@ -1,4 +1,4 @@
-package com.ednaldo.BookStore.dtos;
+package com.ednaldo.BookStore.dto;
 
 import com.ednaldo.BookStore.entities.Autor;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,6 +16,5 @@ public record AutorResponseDTO(UUID id, String nome, @JsonProperty(value = "data
         autor.setNacionalidade(this.nacionalidade);
 
         return autor;
-
     }
 }

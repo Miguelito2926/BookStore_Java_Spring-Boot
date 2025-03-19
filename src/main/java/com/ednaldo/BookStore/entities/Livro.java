@@ -6,9 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -17,13 +21,14 @@ import java.util.UUID;
 @Entity
 @Table(name = "livro")
 @ToString(exclude = "autor")
+@EntityListeners(AuditingEntityListener.class)
 public class Livro {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(length = 20, nullable = false)
+    @Column(length = 20, nullable = false, unique = true)
     private String isbn;
 
     @Column(length = 150, nullable = false)
@@ -45,4 +50,16 @@ public class Livro {
     )
     @JoinColumn(name = "id_autor")
     private Autor autor;
+
+    @Column(name = "data_cadastro")
+    @CreatedDate
+    private LocalDateTime dataCadastro;
+
+    @Column(name = "data_atualizacao")
+    @LastModifiedDate
+    private LocalDateTime dataAtualizacao;
+
+    @Column(name = "id_usuario")
+    private UUID idUsuario;
+
 }
