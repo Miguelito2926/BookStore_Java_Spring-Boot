@@ -1,12 +1,17 @@
 package com.ednaldo.BookStore.controller;
 
-import com.ednaldo.BookStore.dtos.AutorRequestDto;
-import com.ednaldo.BookStore.dtos.AutorResponseDTO;
-import com.ednaldo.BookStore.dtos.AutorSuccessResponseDTO;
+import com.ednaldo.BookStore.dto.AutorRequestDto;
+import com.ednaldo.BookStore.dto.AutorResponseDTO;
+import com.ednaldo.BookStore.dto.AutorSuccessResponseDTO;
 import com.ednaldo.BookStore.entities.Autor;
+import com.ednaldo.BookStore.mapper.AutorMapper;
 import com.ednaldo.BookStore.services.AutorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -20,26 +25,21 @@ import java.util.List;
 public class AutorController {
 
     private final AutorService autorService;
+    private final AutorMapper autorMapper;
 
     @PostMapping
     public ResponseEntity<Void> criarAutor(@RequestBody @Valid AutorRequestDto requestDto) {
 
-        Autor autorEntidade = requestDto.mapearAutor();
-        AutorSuccessResponseDTO autorResponseDTO = autorService.createAutor(autorEntidade);
+        Autor autor = autorMapper.toEntity(requestDto);
+        AutorSuccessResponseDTO autorResponseDTO = autorService.createAutor(autor);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(autorEntidade.getId())
+                .buildAndExpand(autor.getId())
                 .toUri();
         return ResponseEntity.created(location).build();
     }
-
-//    @GetMapping
-//    public ResponseEntity<List<Autor>> findAllAutores() {
-//        List<Autor> listaAutores = autorService.listarAutores();
-//        return ResponseEntity.ok(listaAutores);
-//    }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<AutorResponseDTO> getAutorDetails(@PathVariable String id) throws Exception {
@@ -54,16 +54,20 @@ public class AutorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AutorResponseDTO>> pesquisar(
+    public ResponseEntity<Page<AutorResponseDTO>> pesquisar(
             @RequestParam(value = "nome", required = false) String nome,
-            @RequestParam(value = "nacionalidade", required = false) String nacionalidade) {
+            @RequestParam(value = "nacionalidade", required = false) String nacionalidade,
+            @PageableDefault(size = 20, sort = "nome", direction = Sort.Direction.ASC) Pageable pageable) {
 
-        List<AutorResponseDTO> dto = autorService.pesquisarAutor(nome, nacionalidade);
-        return ResponseEntity.ok(dto);
+            return autorService.pesquisaByExample(nome, nacionalidade, pageable)
+                    .map(autores -> autores.map(autorMapper::toDTO))
+                    .map(ResponseEntity::ok)
+                    .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
+
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Void> atualizarAutor(@PathVariable String id, @RequestBody AutorRequestDto requestDto) {
+    public ResponseEntity<Void> atualizarAutor(@PathVariable String id, @RequestBody @Valid AutorRequestDto requestDto) {
         autorService.update(id, requestDto);
         return ResponseEntity.ok().build();
     }

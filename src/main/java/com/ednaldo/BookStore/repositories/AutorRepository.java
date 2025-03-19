@@ -1,8 +1,12 @@
 package com.ednaldo.BookStore.repositories;
 
 import com.ednaldo.BookStore.entities.Autor;
+import org.springframework.data.domain.Example;
+
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.awt.print.Pageable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;

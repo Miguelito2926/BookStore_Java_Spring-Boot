@@ -1,17 +1,21 @@
 package com.ednaldo.BookStore.services;
 
 
-import com.ednaldo.BookStore.dtos.AutorRequestDto;
-import com.ednaldo.BookStore.dtos.AutorResponseDTO;
-import com.ednaldo.BookStore.dtos.AutorSuccessResponseDTO;
+import com.ednaldo.BookStore.dto.AutorRequestDto;
+import com.ednaldo.BookStore.dto.AutorResponseDTO;
+import com.ednaldo.BookStore.dto.AutorSuccessResponseDTO;
 import com.ednaldo.BookStore.entities.Autor;
 import com.ednaldo.BookStore.exceptions.AutorNotFoundException;
 import com.ednaldo.BookStore.exceptions.OperationNotAllowedException;
+import com.ednaldo.BookStore.mapper.AutorMapper;
 import com.ednaldo.BookStore.repositories.AutorRepository;
 import com.ednaldo.BookStore.repositories.LivroRepository;
 import com.ednaldo.BookStore.validator.AutorValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +29,7 @@ public class AutorService {
     private final AutorRepository autorRepository;
     private final AutorValidator autorValidator;
     private final LivroRepository livroRepository;
+    private final AutorMapper autorMapper;
 
     public AutorSuccessResponseDTO createAutor(Autor requestDto) {
 
@@ -43,13 +48,7 @@ public class AutorService {
         Optional<Autor> autorOptional = autorRepository.findById(UUID.fromString(id));
         if (autorOptional.isPresent()) {
             Autor autor = autorOptional.get();
-            AutorResponseDTO dto = new AutorResponseDTO(
-                    autor.getId(),
-                    autor.getNome(),
-                    autor.getDataNascimento(),
-                    autor.getNacionalidade()
-            );
-            return dto;
+            return autorMapper.toDTO(autor);
         }
         throw new AutorNotFoundException("Autor com o ID " + id + " não encontrado.");
     }
@@ -74,26 +73,26 @@ Se o ID existir, ele exclui. Se não, lança a exceção antes de tentar excluir
         autorRepository.deleteById(uuid);
     }
 
-    public List<AutorResponseDTO> pesquisarAutor(String nome, String nacionalidade) {
-        List<Autor> autores;
+    public Optional<Page<Autor>> pesquisaByExample(String nome, String nacionalidade, Pageable pageable) {
 
-        if (nome != null && nacionalidade != null) {
-            autores = autorRepository.findByNomeAndNacionalidade(nome, nacionalidade);
-        } else if (nome != null) {
-            autores = autorRepository.findByNome(nome);
-        } else if (nacionalidade != null) {
-            autores = autorRepository.findByNacionalidade(nacionalidade);
-        } else {
-            autores = autorRepository.findAll();
+        if (nome == null && nacionalidade == null) {
+            return Optional.empty();
         }
 
-        return autores.stream()
-                .map(autor -> new AutorResponseDTO(
-                        autor.getId(),
-                        autor.getNome(),
-                        autor.getDataNascimento(),
-                        autor.getNacionalidade()))
-                .collect(Collectors.toList());
+        var autor = new Autor();
+        autor.setNome(nome);
+        autor.setNacionalidade(nacionalidade);
+
+        ExampleMatcher matcher = ExampleMatcher
+                .matching()
+                .withIgnoreNullValues()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+        Example<Autor> autorExample = Example.of(autor, matcher);
+
+        Page<Autor> result = autorRepository.findAll(autorExample, pageable);
+
+        return result.isEmpty() ? Optional.empty() : Optional.of(result);
     }
 
     public void update(String id, AutorRequestDto requestDto) {
