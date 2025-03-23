@@ -1,7 +1,7 @@
 package com.ednaldo.BookStore.handle;
 
 import com.ednaldo.BookStore.exceptions.AutorAlreadyRegisteredException;
-import com.ednaldo.BookStore.exceptions.AutorNotFoundException;
+import com.ednaldo.BookStore.exceptions.NotFoundException;
 import com.ednaldo.BookStore.exceptions.ErrorResponse;
 import com.ednaldo.BookStore.exceptions.OperationNotAllowedException;
 import org.springframework.http.HttpStatus;
@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(AutorNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleAutorNotFoundException(AutorNotFoundException ex) {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleAutorNotFoundException(NotFoundException ex) {
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
                 HttpStatus.NOT_FOUND.getReasonPhrase(),

@@ -5,7 +5,7 @@ import com.ednaldo.BookStore.dto.AutorRequestDto;
 import com.ednaldo.BookStore.dto.AutorResponseDTO;
 import com.ednaldo.BookStore.dto.AutorSuccessResponseDTO;
 import com.ednaldo.BookStore.entities.Autor;
-import com.ednaldo.BookStore.exceptions.AutorNotFoundException;
+import com.ednaldo.BookStore.exceptions.NotFoundException;
 import com.ednaldo.BookStore.exceptions.OperationNotAllowedException;
 import com.ednaldo.BookStore.mapper.AutorMapper;
 import com.ednaldo.BookStore.repositories.AutorRepository;
@@ -18,10 +18,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @Service
 public class AutorService {
@@ -45,7 +44,7 @@ public class AutorService {
             Autor autor = autorOptional.get();
             return autorMapper.toDTO(autor);
         }
-        throw new AutorNotFoundException("Autor com o ID " + id + " não encontrado.");
+        throw new NotFoundException("Autor com o ID " + id + " não encontrado.");
     }
 
 
@@ -59,7 +58,7 @@ Se o ID existir, ele exclui. Se não, lança a exceção antes de tentar excluir
 
         UUID uuid = UUID.fromString(id);
 
-        Autor autor = autorRepository.findById(uuid).orElseThrow(() -> new AutorNotFoundException("Autor com o ID " + id + " não encontrado."));
+        Autor autor = autorRepository.findById(uuid).orElseThrow(() -> new NotFoundException("Autor com o ID " + id + " não encontrado."));
 
         if (possuiLivro(autor)){
             throw new OperationNotAllowedException("Não é possivel excluir um autor que possui livros cadastrado!");
@@ -94,7 +93,7 @@ Se o ID existir, ele exclui. Se não, lança a exceção antes de tentar excluir
 
         // Busca o autor pelo ID, lançando exceção se não encontrar
        Autor autor =  autorRepository.findById(UUID.fromString(id))
-               .orElseThrow(() -> new AutorNotFoundException("Autor com o ID" + id + "não encontrado."));
+               .orElseThrow(() -> new NotFoundException("Autor com o ID" + id + "não encontrado."));
 
         // Atualiza os dados do autor existente
         autor.setNome(requestDto.nome());
