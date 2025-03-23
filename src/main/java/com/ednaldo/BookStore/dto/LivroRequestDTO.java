@@ -1,6 +1,7 @@
 package com.ednaldo.BookStore.dto;
 
 import com.ednaldo.BookStore.enums.GeneroLivro;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
@@ -21,10 +22,11 @@ public record LivroRequestDTO(
 
         @NotNull(message = "Campo não pode ser nulo")
         @Past(message = "Não é permitido data futura")
+        @Column(name = "data_publicacao")
         LocalDate dataPublicacao,
 
         GeneroLivro genero,
         BigDecimal preco,
 
         @NotNull(message = "Campo não pode ser nulo")
-        UUID id_autor) { }
+        UUID idAutor) { }

@@ -38,12 +38,7 @@ public class AutorService {
         return new AutorSuccessResponseDTO(true);
     }
 
-    public List<Autor> listarAutores() {
-        List<Autor> autorList = autorRepository.findAll();
-        return autorList;
-    }
-
-    public AutorResponseDTO getAutor(String id) throws Exception {
+    public AutorResponseDTO getAutor(String id) {
 
         Optional<Autor> autorOptional = autorRepository.findById(UUID.fromString(id));
         if (autorOptional.isPresent()) {
