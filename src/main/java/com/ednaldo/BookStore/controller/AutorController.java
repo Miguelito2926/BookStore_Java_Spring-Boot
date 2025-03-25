@@ -43,7 +43,6 @@ public class AutorController {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<AutorResponseDTO> obterAutorDetails(@PathVariable String id) throws Exception {
-
         return ResponseEntity.ok(autorService.getAutor(id));
     }
 

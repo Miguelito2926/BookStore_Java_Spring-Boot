@@ -3,16 +3,23 @@ package com.ednaldo.BookStore.mapper;
 import com.ednaldo.BookStore.dto.LivroRequestDTO;
 import com.ednaldo.BookStore.dto.LivroResponseDTO;
 import com.ednaldo.BookStore.entities.Livro;
+import com.ednaldo.BookStore.repositories.AutorRepository;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface LivroMapper {
+public abstract class LivroMapper {
 
-    Livro toEntity(LivroRequestDTO dto);
+    @Autowired
+    AutorRepository autorRepository;
 
-    LivroResponseDTO toDTO(Livro livro);
+    @Mapping(target = "autor", expression = "java(autorRepository.findById(dto.idAutor()).orElse(null))")
+    public abstract Livro toEntity(LivroRequestDTO dto);
 
-    List<LivroResponseDTO> listToDto(List<Livro> allLivros);
+    public abstract LivroResponseDTO toDTO(Livro livro);
+
+    public abstract List<LivroResponseDTO> listToDto(List<Livro> allLivros);
 }

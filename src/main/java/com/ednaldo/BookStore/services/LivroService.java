@@ -26,22 +26,10 @@ public class LivroService {
     public LivroResponseDTO cadastrarLivro(LivroRequestDTO request) {
         // Verifica se o autor existe sem carregá-lo inteiro
         if (!autorRepository.existsById(request.idAutor())) {
-            throw new NotFoundException("Autor não encontrado!");
+            throw new NotFoundException("Não é possivel cadastrar  um livro com Autor inválido ou não existente.");
         }
 
-        // Converte o DTO para entidade
         Livro livro = livroMapper.toEntity(request);
-
-        // Cria apenas a referência do Autor com o ID
-        Autor autor = new Autor();
-
-        // Setando apenas o ID sem buscar no banco
-        autor.setId(request.idAutor());
-
-        // Associa o autor ao livro
-        livro.setAutor(autor);
-
-        // Salva o livro
         livroRepository.save(livro);
 
         return livroMapper.toDTO(livro);

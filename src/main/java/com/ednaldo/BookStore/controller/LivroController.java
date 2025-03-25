@@ -21,38 +21,41 @@ public class LivroController {
     private final LivroService livroService;
 
     @PostMapping
-    public ResponseEntity<LivroResponseDTO> insertLivro(@RequestBody @Valid LivroRequestDTO requestDTO){
+    public ResponseEntity<LivroResponseDTO> insertLivro(@RequestBody @Valid LivroRequestDTO requestDTO) {
 
-       // Livro livro = livroMapper.toEntity(requestDTO);
         LivroResponseDTO dto = livroService.cadastrarLivro(requestDTO);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(dto.id())
                 .toUri();
+
         return ResponseEntity.created(location).build();
     }
 
     @GetMapping
     public ResponseEntity<List<LivroResponseDTO>> listLivros() {
+
         return ResponseEntity.ok(livroService.listarLivros());
     }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<LivroResponseDTO> listLivros(@PathVariable UUID id) {
+
         return ResponseEntity.ok(livroService.obterLivro(id));
     }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deletarLivros(@PathVariable UUID id) {
+
         livroService.deletarLivro(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "/{id}")
     public ResponseEntity<Void> listLivros(@PathVariable UUID id, @RequestBody LivroRequestDTO requestDTO) {
+
         livroService.atualizarLivro(id, requestDTO);
         return ResponseEntity.noContent().build();
     }
-
 }
