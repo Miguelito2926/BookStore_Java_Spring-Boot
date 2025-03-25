@@ -1,6 +1,7 @@
 package com.ednaldo.BookStore.controller;
 
-import com.ednaldo.BookStore.dto.AutorRequestDto;
+
+import com.ednaldo.BookStore.dto.AutorRequestDTO;
 import com.ednaldo.BookStore.dto.AutorResponseDTO;
 import com.ednaldo.BookStore.dto.AutorSuccessResponseDTO;
 import com.ednaldo.BookStore.entities.Autor;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -28,7 +28,7 @@ public class AutorController {
     private final AutorMapper autorMapper;
 
     @PostMapping
-    public ResponseEntity<Void> criarAutor(@RequestBody @Valid AutorRequestDto requestDto) {
+    public ResponseEntity<Void> criarAutor(@RequestBody @Valid AutorRequestDTO requestDto) {
 
         Autor autor = autorMapper.toEntity(requestDto);
         AutorSuccessResponseDTO autorResponseDTO = autorService.createAutor(autor);
@@ -67,7 +67,7 @@ public class AutorController {
 
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Void> atualizarAutor(@PathVariable String id, @RequestBody @Valid AutorRequestDto requestDto) {
+    public ResponseEntity<Void> atualizarAutor(@PathVariable String id, @RequestBody @Valid AutorRequestDTO requestDto) {
         autorService.update(id, requestDto);
         return ResponseEntity.ok().build();
     }

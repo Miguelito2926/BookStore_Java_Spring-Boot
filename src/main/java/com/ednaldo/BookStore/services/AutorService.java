@@ -1,7 +1,8 @@
 package com.ednaldo.BookStore.services;
 
 
-import com.ednaldo.BookStore.dto.AutorRequestDto;
+
+import com.ednaldo.BookStore.dto.AutorRequestDTO;
 import com.ednaldo.BookStore.dto.AutorResponseDTO;
 import com.ednaldo.BookStore.dto.AutorSuccessResponseDTO;
 import com.ednaldo.BookStore.entities.Autor;
@@ -89,7 +90,7 @@ Se o ID existir, ele exclui. Se não, lança a exceção antes de tentar excluir
         return result.isEmpty() ? Optional.empty() : Optional.of(result);
     }
 
-    public void update(String id, AutorRequestDto requestDto) {
+    public void update(String id, AutorRequestDTO requestDto) {
 
         // Busca o autor pelo ID, lançando exceção se não encontrar
        Autor autor =  autorRepository.findById(UUID.fromString(id))
@@ -106,7 +107,6 @@ Se o ID existir, ele exclui. Se não, lança a exceção antes de tentar excluir
         // Salva a atualização no banco de dados
         autorRepository.save(autor);
     }
-
 
     //Metodo auxiliar para verificação se autor possui livros cadastrados
     public boolean possuiLivro(Autor autor) {

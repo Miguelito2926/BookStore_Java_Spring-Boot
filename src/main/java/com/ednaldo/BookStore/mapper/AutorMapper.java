@@ -1,6 +1,6 @@
 package com.ednaldo.BookStore.mapper;
 
-import com.ednaldo.BookStore.dto.AutorRequestDto;
+import com.ednaldo.BookStore.dto.AutorRequestDTO;
 import com.ednaldo.BookStore.dto.AutorResponseDTO;
 import com.ednaldo.BookStore.entities.Autor;
 import org.mapstruct.Mapper;
@@ -11,9 +11,9 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface AutorMapper {
 
-    Autor toEntity(AutorRequestDto dto);
+    Autor toEntity(AutorRequestDTO dto);
 
-    List<Autor> listToEntity(List<AutorRequestDto> dtoList);
+    List<Autor> listToEntity(List<AutorRequestDTO> dtoList);
 
     List<AutorResponseDTO> listToDTO(List<Autor> autorList);
 

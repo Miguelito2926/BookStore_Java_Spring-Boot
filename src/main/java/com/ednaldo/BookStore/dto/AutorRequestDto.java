@@ -1,6 +1,5 @@
 package com.ednaldo.BookStore.dto;
 
-import com.ednaldo.BookStore.entities.Autor;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -9,7 +8,7 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
-public record AutorRequestDto(
+public record AutorRequestDTO(
 
         @NotBlank(message = "Campo é Obrigatório")
         @Size(min = 2, max = 100, message = "Campo fora do tamanho padrão")

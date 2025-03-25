@@ -1,13 +1,19 @@
-package com.ednaldo.BookStore.handle;
+package com.ednaldo.BookStore.exceptions.handle;
 
+import com.ednaldo.BookStore.dto.ErrorDTO;
+import com.ednaldo.BookStore.dto.ErrorResponseDTO;
 import com.ednaldo.BookStore.exceptions.AutorAlreadyRegisteredException;
-import com.ednaldo.BookStore.exceptions.NotFoundException;
 import com.ednaldo.BookStore.exceptions.ErrorResponse;
+import com.ednaldo.BookStore.exceptions.NotFoundException;
 import com.ednaldo.BookStore.exceptions.OperationNotAllowedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -43,6 +49,21 @@ public class GlobalExceptionHandler {
         );
 
         return new ResponseEntity<>(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponseDTO> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        List<ErrorDTO> errorList = ex.getBindingResult().getFieldErrors().stream()
+                .map(fe -> new ErrorDTO(fe.getField(), fe.getDefaultMessage()))
+                .collect(Collectors.toList());
+
+        ErrorResponseDTO errorResponse = new ErrorResponseDTO(
+                HttpStatus.UNPROCESSABLE_ENTITY.value(),
+                "Erro de Validação",
+                errorList
+        );
+
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(errorResponse);
     }
 }
 
