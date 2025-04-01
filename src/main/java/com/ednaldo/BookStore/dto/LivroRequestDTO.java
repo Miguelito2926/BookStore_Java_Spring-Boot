@@ -13,8 +13,8 @@ import java.util.UUID;
 
 public record LivroRequestDTO(
 
-        @ISBN
         @NotBlank(message = "Campo Obrigatório")
+        @ISBN
         String isbn,
 
         @NotBlank(message = "Campo Obrigatório")

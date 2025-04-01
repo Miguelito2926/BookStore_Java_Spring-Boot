@@ -1,6 +1,7 @@
 package com.ednaldo.BookStore.controller;
 
 
+import com.ednaldo.BookStore.api.GenericApi;
 import com.ednaldo.BookStore.dto.AutorRequestDTO;
 import com.ednaldo.BookStore.dto.AutorResponseDTO;
 import com.ednaldo.BookStore.dto.AutorSuccessResponseDTO;
@@ -15,14 +16,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "/autores")
-public class AutorController {
+public class AutorController implements GenericApi {
 
     private final AutorService autorService;
     private final AutorMapper autorMapper;
@@ -33,11 +33,7 @@ public class AutorController {
         Autor autor = autorMapper.toEntity(requestDto);
         AutorSuccessResponseDTO autorResponseDTO = autorService.createAutor(autor);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(autor.getId())
-                .toUri();
+        URI location = gerarHearderLocation(autor.getId());
         return ResponseEntity.created(location).build();
     }
 
