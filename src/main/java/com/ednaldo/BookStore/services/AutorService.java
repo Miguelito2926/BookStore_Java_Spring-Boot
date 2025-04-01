@@ -33,7 +33,7 @@ public class AutorService {
 
     public AutorSuccessResponseDTO createAutor(Autor requestDto) {
 
-        autorValidator.validarAutor(requestDto);
+        autorValidator.validateAutor(requestDto);
         autorRepository.save(requestDto);
         return new AutorSuccessResponseDTO(true);
     }
@@ -61,14 +61,14 @@ Se o ID existir, ele exclui. Se não, lança a exceção antes de tentar excluir
 
         Autor autor = autorRepository.findById(uuid).orElseThrow(() -> new NotFoundException("Autor com o ID " + id + " não encontrado."));
 
-        if (possuiLivro(autor)){
+        if (hasLivro(autor)){
             throw new OperationNotAllowedException("Não é possivel excluir um autor que possui livros cadastrado!");
         }
 
         autorRepository.deleteById(uuid);
     }
 
-    public Optional<Page<Autor>> pesquisaByExample(String nome, String nacionalidade, Pageable pageable) {
+    public Optional<Page<Autor>> searchByExample(String nome, String nacionalidade, Pageable pageable) {
 
         if (nome == null && nacionalidade == null) {
             return Optional.empty();
@@ -102,14 +102,14 @@ Se o ID existir, ele exclui. Se não, lança a exceção antes de tentar excluir
         autor.setNacionalidade(requestDto.nacionalidade());
 
         // Valida se os dados podem ser atualizados sem criar duplicatas
-        autorValidator.validarAutor(autor);
+        autorValidator.validateAutor(autor);
 
         // Salva a atualização no banco de dados
         autorRepository.save(autor);
     }
 
     //Metodo auxiliar para verificação se autor possui livros cadastrados
-    public boolean possuiLivro(Autor autor) {
+    public boolean hasLivro(Autor autor) {
         return livroRepository.existsByAutor(autor);
     }
 }

@@ -21,8 +21,8 @@ public class AutorValidator {
      * @param autor Objeto do autor a ser validado.
      * @throws AutorAlreadyRegisteredException se um autor com os mesmos dados já existir.
      */
-    public void validarAutor(Autor autor) {
-        if (existAutorCadastrado(autor)) {
+    public void validateAutor(Autor autor) {
+        if (existAutorCreated(autor)) {
             logger.warn("Tentativa de cadastrar autor já existente: {}", autor.getNome());
             throw new AutorAlreadyRegisteredException("Autor já está cadastrado!");
         }
@@ -33,7 +33,7 @@ public class AutorValidator {
      * @param autor Objeto do autor que está sendo validado.
      * @return true se um autor com os mesmos dados já existir (exceto se for o mesmo ID na atualização).
      */
-    private boolean existAutorCadastrado(Autor autor) {
+    private boolean existAutorCreated(Autor autor) {
         Optional<Autor> autorEncontrado = autorRepository.findByNomeAndDataNascimentoAndNacionalidade(
                 autor.getNome(),
                 autor.getDataNascimento(),

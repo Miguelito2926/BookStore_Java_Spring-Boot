@@ -23,32 +23,32 @@ public class LivroController implements GenericApi {
 
     @PostMapping
     public ResponseEntity<LivroResponseDTO> insertLivro(@RequestBody @Valid LivroRequestDTO requestDTO) {
-        LivroResponseDTO dto = livroService.cadastrarLivro(requestDTO);
+        LivroResponseDTO dto = livroService.createLivro(requestDTO);
         URI location = gerarHearderLocation(dto.id());
 
         return ResponseEntity.created(location).build();
     }
 
     @GetMapping
-    public ResponseEntity<List<LivroResponseDTO>> listLivros() {
-        return ResponseEntity.ok(livroService.listarLivros());
+    public ResponseEntity<List<LivroResponseDTO>> listAllLivros() {
+        return ResponseEntity.ok(livroService.findAllLivros());
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<LivroResponseDTO> listLivros(@PathVariable UUID id) {
-        return ResponseEntity.ok(livroService.obterLivro(id));
+    public ResponseEntity<LivroResponseDTO> getLivroDetail(@PathVariable UUID id) {
+        return ResponseEntity.ok(livroService.getLivro(id));
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deletarLivros(@PathVariable UUID id) {
-        livroService.deletarLivro(id);
+    public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
+        livroService.deleteLivro(id);
 
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Void> listLivros(@PathVariable UUID id, @RequestBody LivroRequestDTO requestDTO) {
-        livroService.atualizarLivro(id, requestDTO);
+    public ResponseEntity<Void> updateLivro(@PathVariable UUID id, @RequestBody LivroRequestDTO requestDTO) {
+        livroService.updateLivro(id, requestDTO);
 
         return ResponseEntity.noContent().build();
     }

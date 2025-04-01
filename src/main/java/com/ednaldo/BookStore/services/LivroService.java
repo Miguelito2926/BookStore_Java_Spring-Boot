@@ -23,7 +23,7 @@ public class LivroService {
     private final LivroMapper livroMapper;
     private final AutorRepository autorRepository;
 
-    public LivroResponseDTO cadastrarLivro(LivroRequestDTO request) {
+    public LivroResponseDTO createLivro(LivroRequestDTO request) {
         // Verifica se o autor existe sem carregá-lo inteiro
         if (!autorRepository.existsById(request.idAutor())) {
             throw new NotFoundException("Não é possivel cadastrar  um livro com Autor inválido ou não existente.");
@@ -35,19 +35,19 @@ public class LivroService {
         return livroMapper.toDTO(livro);
     }
 
-    public List<LivroResponseDTO> listarLivros() {
+    public List<LivroResponseDTO> findAllLivros() {
         List<Livro> allLivros = livroRepository.findAll();
         return livroMapper.listToDto(allLivros);
     }
 
-    public LivroResponseDTO obterLivro(UUID id) {
+    public LivroResponseDTO getLivro(UUID id) {
         Livro livro = livroRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Livro não encontrado!"));
 
         return livroMapper.toDTO(livro);
     }
 
-    public void deletarLivro(UUID id) {
+    public void deleteLivro(UUID id) {
 
         if (!livroRepository.existsById(id)) {
             throw new NotFoundException("Autor não encontrado!");
@@ -55,7 +55,7 @@ public class LivroService {
         livroRepository.deleteById(id);
     }
 
-    public void atualizarLivro(UUID id, LivroRequestDTO requestDto) {
+    public void updateLivro(UUID id, LivroRequestDTO requestDto) {
         var livro = livroRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Livro não encontrado!"));
 
