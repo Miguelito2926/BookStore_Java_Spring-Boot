@@ -94,7 +94,7 @@ Se o ID existir, ele exclui. Se não, lança a exceção antes de tentar excluir
 
         // Busca o autor pelo ID, lançando exceção se não encontrar
        Autor autor =  autorRepository.findById(UUID.fromString(id))
-               .orElseThrow(() -> new NotFoundException("Autor com o ID" + id + "não encontrado."));
+               .orElseThrow(() -> new NotFoundException("Autor com o ID" +  id  + " não encontrado."));
 
         // Atualiza os dados do autor existente
         autor.setNome(requestDto.nome());

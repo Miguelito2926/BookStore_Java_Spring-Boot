@@ -4,14 +4,20 @@ import com.ednaldo.BookStore.dto.LivroRequestDTO;
 import com.ednaldo.BookStore.dto.LivroResponseDTO;
 import com.ednaldo.BookStore.entities.Autor;
 import com.ednaldo.BookStore.entities.Livro;
+import com.ednaldo.BookStore.enums.GeneroLivro;
 import com.ednaldo.BookStore.exceptions.NotFoundException;
 import com.ednaldo.BookStore.mapper.LivroMapper;
 import com.ednaldo.BookStore.repositories.AutorRepository;
 import com.ednaldo.BookStore.repositories.LivroRepository;
+import com.ednaldo.BookStore.util.LivroSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,6 +46,13 @@ public class LivroService {
         return livroMapper.listToDto(allLivros);
     }
 
+    public Page<LivroResponseDTO> searchLivros(String isbn, String titulo, String nomeAutor, GeneroLivro genero, Integer anoPublicacao, Pageable pageable) {
+
+        Specification<Livro> specification = LivroSpecification.filterBy(isbn, titulo, nomeAutor, genero, anoPublicacao);
+        Page<Livro> page = livroRepository.findAll(specification, pageable);
+        return page.map(livroMapper::toDTO);
+    }
+
     public LivroResponseDTO getLivro(UUID id) {
         Livro livro = livroRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Livro não encontrado!"));
@@ -50,7 +63,7 @@ public class LivroService {
     public void deleteLivro(UUID id) {
 
         if (!livroRepository.existsById(id)) {
-            throw new NotFoundException("Autor não encontrado!");
+            throw new NotFoundException("Livro não encontrado!");
         }
         livroRepository.deleteById(id);
     }

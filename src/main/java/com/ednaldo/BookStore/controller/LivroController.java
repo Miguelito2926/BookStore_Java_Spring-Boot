@@ -3,14 +3,20 @@ package com.ednaldo.BookStore.controller;
 import com.ednaldo.BookStore.api.GenericApi;
 import com.ednaldo.BookStore.dto.LivroRequestDTO;
 import com.ednaldo.BookStore.dto.LivroResponseDTO;
+import com.ednaldo.BookStore.enums.GeneroLivro;
 import com.ednaldo.BookStore.services.LivroService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,6 +38,21 @@ public class LivroController implements GenericApi {
     @GetMapping
     public ResponseEntity<List<LivroResponseDTO>> listAllLivros() {
         return ResponseEntity.ok(livroService.findAllLivros());
+    }
+
+    @GetMapping(value = "/search")
+    public ResponseEntity<Page<LivroResponseDTO>> searchLivros(
+
+            @RequestParam(required = false) String isbn,
+            @RequestParam(required = false) String titulo,
+            @RequestParam(required = false) String nomeAutor,
+            @RequestParam(required = false) GeneroLivro genero,
+            @RequestParam(required = false) Integer anoPublicacao,
+            @PageableDefault(size = 10, sort = "titulo", direction = Sort.Direction.ASC) Pageable pageable) {
+
+        Page<LivroResponseDTO> page = livroService.searchLivros(isbn, titulo, nomeAutor, genero, anoPublicacao, pageable);
+        return ResponseEntity.ok(page);
+
     }
 
     @GetMapping(value = "/{id}")

@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring"/*uses = AutorMapper.class*/)
 public abstract class LivroMapper {
 
     @Autowired
