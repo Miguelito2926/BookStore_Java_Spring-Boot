@@ -26,6 +26,7 @@ public record LivroRequestDTO(
         LocalDate dataPublicacao,
 
         GeneroLivro genero,
+        
         BigDecimal preco,
 
         @NotNull(message = "Campo não pode ser nulo")
