@@ -2,9 +2,7 @@ package com.ednaldo.BookStore.entities;
 
 import io.hypersistence.utils.hibernate.type.array.ListArrayType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import org.hibernate.annotations.Type;
 
 import java.util.List;
