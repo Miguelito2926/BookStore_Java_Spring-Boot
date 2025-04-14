@@ -12,11 +12,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,6 +27,7 @@ public class LivroController implements GenericApi {
     private final LivroService livroService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<LivroResponseDTO> insertLivro(@RequestBody @Valid LivroRequestDTO requestDTO) {
         LivroResponseDTO dto = livroService.createLivro(requestDTO);
         URI location = gerarHearderLocation(dto.id());
@@ -36,11 +36,13 @@ public class LivroController implements GenericApi {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<List<LivroResponseDTO>> listAllLivros() {
         return ResponseEntity.ok(livroService.findAllLivros());
     }
 
     @GetMapping(value = "/search")
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<Page<LivroResponseDTO>> searchLivros(
 
             @RequestParam(required = false) String isbn,
@@ -56,11 +58,13 @@ public class LivroController implements GenericApi {
     }
 
     @GetMapping(value = "/{id}")
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<LivroResponseDTO> getLivroDetail(@PathVariable UUID id) {
         return ResponseEntity.ok(livroService.getLivro(id));
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
         livroService.deleteLivro(id);
 
@@ -68,6 +72,7 @@ public class LivroController implements GenericApi {
     }
 
     @PutMapping(value = "/{id}")
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<Void> updateLivro(@PathVariable UUID id, @RequestBody LivroRequestDTO requestDTO) {
         livroService.updateLivro(id, requestDTO);
 

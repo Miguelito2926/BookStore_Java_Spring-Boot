@@ -30,7 +30,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(AutorAlreadyRegisteredException.class)
+//    @ExceptionHandler(AccessDeniedException.class)
+//    public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex) {
+//        ErrorResponse errorResponse = new ErrorResponse(
+//                HttpStatus.FORBIDDEN.value(),
+//                HttpStatus.FORBIDDEN.getReasonPhrase(),
+//                ex.getMessage()
+//        );
+//        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+//    }
+
+        @ExceptionHandler(AutorAlreadyRegisteredException.class)
     public ResponseEntity<ErrorResponse> handleAutorAlreadyRegisteredException(AutorAlreadyRegisteredException ex) {
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.CONFLICT.value(),
