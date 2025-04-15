@@ -6,11 +6,13 @@ import com.ednaldo.BookStore.dto.AutorRequestDTO;
 import com.ednaldo.BookStore.dto.AutorResponseDTO;
 import com.ednaldo.BookStore.dto.AutorSuccessResponseDTO;
 import com.ednaldo.BookStore.entities.Autor;
+import com.ednaldo.BookStore.entities.Usuario;
 import com.ednaldo.BookStore.exceptions.NotFoundException;
 import com.ednaldo.BookStore.exceptions.OperationNotAllowedException;
 import com.ednaldo.BookStore.mapper.AutorMapper;
 import com.ednaldo.BookStore.repositories.AutorRepository;
 import com.ednaldo.BookStore.repositories.LivroRepository;
+import com.ednaldo.BookStore.security.SecurityService;
 import com.ednaldo.BookStore.validator.AutorValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
@@ -30,11 +32,15 @@ public class AutorService {
     private final AutorValidator autorValidator;
     private final LivroRepository livroRepository;
     private final AutorMapper autorMapper;
+    private final SecurityService securityService;
 
-    public AutorSuccessResponseDTO createAutor(Autor requestDto) {
+    public AutorSuccessResponseDTO createAutor(Autor autor) {
 
-        autorValidator.validateAutor(requestDto);
-        autorRepository.save(requestDto);
+        autorValidator.validateAutor(autor);
+        Usuario usuario = securityService.usuarioAutenticado();
+        autor.setUsuario(usuario);
+        autorRepository.save(autor);
+
         return new AutorSuccessResponseDTO(true);
     }
 

@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -28,6 +29,7 @@ public class AutorController implements GenericApi {
     private final AutorMapper autorMapper;
 
     @PostMapping
+    @PreAuthorize("hasRole('GERENTE')")
     public ResponseEntity<Void> createAutor(@RequestBody @Valid AutorRequestDTO requestDto) {
 
         Autor autor = autorMapper.toEntity(requestDto);
@@ -38,17 +40,20 @@ public class AutorController implements GenericApi {
     }
 
     @GetMapping(value = "/{id}")
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<AutorResponseDTO> getAutorDetails(@PathVariable String id) throws Exception {
         return ResponseEntity.ok(autorService.getAutor(id));
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasRole('GERENTE')")
     public ResponseEntity<Void> removeAutor(@PathVariable String id) {
         autorService.deleteAutor(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<Page<AutorResponseDTO>> search(
             @RequestParam(value = "nome", required = false) String nome,
             @RequestParam(value = "nacionalidade", required = false) String nacionalidade,
@@ -60,8 +65,8 @@ public class AutorController implements GenericApi {
                     .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
-
     @PutMapping(value = "/{id}")
+    @PreAuthorize("hasRole('GERENTE')")
     public ResponseEntity<Void> updateAutor(@PathVariable String id, @RequestBody @Valid AutorRequestDTO requestDto) {
         autorService.update(id, requestDto);
         return ResponseEntity.ok().build();

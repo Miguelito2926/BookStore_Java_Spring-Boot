@@ -4,11 +4,13 @@ import com.ednaldo.BookStore.dto.LivroRequestDTO;
 import com.ednaldo.BookStore.dto.LivroResponseDTO;
 import com.ednaldo.BookStore.entities.Autor;
 import com.ednaldo.BookStore.entities.Livro;
+import com.ednaldo.BookStore.entities.Usuario;
 import com.ednaldo.BookStore.enums.GeneroLivro;
 import com.ednaldo.BookStore.exceptions.NotFoundException;
 import com.ednaldo.BookStore.mapper.LivroMapper;
 import com.ednaldo.BookStore.repositories.AutorRepository;
 import com.ednaldo.BookStore.repositories.LivroRepository;
+import com.ednaldo.BookStore.security.SecurityService;
 import com.ednaldo.BookStore.util.LivroSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -17,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,6 +29,7 @@ public class LivroService {
     private final LivroRepository livroRepository;
     private final LivroMapper livroMapper;
     private final AutorRepository autorRepository;
+    private final SecurityService securityService;
 
     public LivroResponseDTO createLivro(LivroRequestDTO request) {
         // Verifica se o autor existe sem carregá-lo inteiro
@@ -35,7 +37,9 @@ public class LivroService {
             throw new NotFoundException("Não é possivel cadastrar  um livro com Autor inválido ou não existente.");
         }
 
+        Usuario usuario = securityService.usuarioAutenticado();
         Livro livro = livroMapper.toEntity(request);
+        livro.setUsuario(usuario);
         livroRepository.save(livro);
 
         return livroMapper.toDTO(livro);
